@@ -2,7 +2,7 @@
 Anonymous github folder for double-blind peer review for the paper "New sieving-style ISD"
 
 # isd-sieving
-Many versions of the algorithms were tried: (main.cc, new_main.cc, impl1.cc, impl2.cc).
+Many versions of the algorithms were tried: (main.cc, new_main.cc, impl1.cc, impl2.cc (not presented in this folder)).
 
 The `main.cc' refers to the basic (but not trivial implementation).
 
