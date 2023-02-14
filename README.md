@@ -4,7 +4,7 @@ Anonymous github folder for double-blind peer review for the paper "New sieving-
 # isd-sieving
 Many versions of the algorithms were tried: (main.cc, new_main.cc, impl1.cc, impl2.cc).
 
-The `main.cc' refers to the basic (but not trivial implementation). The impl1 and impl2 refers to other versions not mentioned in the paper.
+The `main.cc' refers to the basic (but not trivial implementation).
 
 Currently using **new_main.cc** for the implementation. To compile: 
 
