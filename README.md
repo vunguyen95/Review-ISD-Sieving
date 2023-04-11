@@ -1,5 +1,5 @@
 # Anonymous-ISD-Sieving
-Anonymous github folder for double-blind peer review for the paper "New sieving-style ISD"
+Anonymous github folder for double-blind peer review for the paper "New sieving-style ISD". A few words about this repository: this is a basic implementation for the Algorithm Merge_Set (Algorithm 2, p.10). Our goal is to verify if we can find a `target' random vector using this routine. We generate a random vector and parity check matrix for each run and observe if this vector can be produced using our described algorithm. More importantly, the memory requirement should be consistent with the theoretical analysis. We stated in the paper that the prospect of implementing a full-scale experiment (medium-size instance, including the outer iteration) are what we are aiming in the near future.
 
 # isd-sieving
 Many versions of the algorithms were tried: (main.cc, new_main.cc, impl1.cc, impl2.cc (not presented in this folder)).
