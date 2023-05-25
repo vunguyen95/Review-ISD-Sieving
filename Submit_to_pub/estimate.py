@@ -5,6 +5,8 @@ from math import inf, floor, ceil
 from functools import lru_cache, cache
 import sys
 
+DOOM = 1 # 0 for the normal attack; 1 for the doom attack.
+
 
 
 
@@ -14,6 +16,7 @@ M_UPPER_BOUND = float(sys.argv[2])
 M_overhead = 1.5
 print("C_label:",c_label)
 print("M_upper_bound:",M_UPPER_BOUND)
+print("DOOM:", DOOM)
 print("  ")
 print("================================================")
 
@@ -96,7 +99,9 @@ def pr_success(n,k,w,p,l,dual=0):
 
 
 
-
+def C_final_check_doom(n,k,p,l,M, n_0, c_label = c_label):
+	sol = n_0*comb(k+l,p)/(2**l) # number of solutions
+	return p*(n-k-l)*sol
 
 
 @cache
@@ -134,6 +139,23 @@ def C_sd(n,k,p,l,M, p_prime, c_label = c_label):
 def ISD_prime(n,k,w,p,p_prime, l,M,dual):
 	# print(k)
 	return pr_success(n,k,w,p,l, dual) + log2(float(gauss(n,k,w,p,l) + C_inner_prime(n,k,p,l,M,p_prime)))
+
+def ISD_doom(n,k,w,p,p_prime, l,M,dual, n_0):
+	'''
+	@summary: ISD_doom is the complexity for the ISD for the doom attack. (decoding out of the many syndromes)
+	@param n_0: n_0 is the number of solutions in the doom attack.
+	'''
+	def C_final_check_doom(n,k,p,l,M, n_0, c_label = c_label):
+		sol = n_0*comb(k+l,p)/(2**l) # number of solutions
+		return p*(n-k-l)*sol
+	def C_inner_doom(n,k,p,l,M, p_prime, n_0, c_label = c_label):
+		p_pprime = int(p/2) - p_prime
+		inner = l*M*(p + c_label*comb(p, int(p/2))  + comb(p - p_pprime, p_prime) + 2*p  + 4* log2(M))
+		# p is from the check; c_label is label; C_mov is comb(p-p_pprime, p_prime); 2*p + 4* log2(M) is from combine. 
+		final_check = C_final_check_doom(n,k,p,l,M,n_0, c_label)
+		return final_check + inner
+	# print(k)
+	return pr_success(n,k,w,p,l, dual)- log2(n_0) + log2(float(gauss(n+n_0,k,w,p,l) + C_inner_doom(n,k,p,l,M,p_prime,n_0)))
 
 class BIKE_security:
 	"""
@@ -212,9 +234,14 @@ class BIKE_security:
 				for l in range (0,101):
 					q = comb(p,int(p/2))*comb(self.k+l-p,int(p/2))/comb(self.k+l,p)
 					M = 2/q
-					M *= M_overhead
-					sol = (comb(self.k+l,p))/(np.longdouble)(2**l)
-					temp = ISD_prime(self.n,self.k,self.t,p,p_prime, l,M, dual=0) - log2(self.k)/2 # decoding out of many.
+					M *= M_overhead					
+					if DOOM == 1: 
+						M *= 2 # from the doom attack
+						sol = self.k * (comb(self.k+l,p))/(np.longdouble)(2**l)
+						temp = ISD_doom(self.n,self.k,self.t,p,p_prime, l,M,0, self.k) # out of many.
+					if DOOM == 0:
+						sol =  (comb(self.k+l,p))/(np.longdouble)(2**l)
+						temp = ISD_prime(self.n,self.k,self.t,p,p_prime, l,M,0)
 					if sol >= 1 and temp <= init and M/2>= sol and comb(self.k+l, p_pprime) <= M and log2(M) <M_UPPER_BOUND:
 						init = temp
 						params[0] = p
@@ -224,13 +251,14 @@ class BIKE_security:
 						params[4] = p_prime
 					
 		print(params)
-		print("Gauss cost:", log2(gauss(self.n,self.k,self.w,params[0],params[1])))
+		print("Gauss cost:", log2(gauss(self.n,self.k,self.t,params[0],params[1])))
 		print("Merge set cost:", log2(C_sd(self.n,self.k,params[0],params[1],2**params[3], params[4])))
 		print("check cost:", log2(C_check(self.n,self.k,params[0],params[1],2**params[3])))
 		print("C_label cost:", log2(C_label(self.n,self.k,params[0],params[1],2**params[3])))
 		print("C_move cost:", log2(C_move(self.n,self.k,params[0],params[1],2**params[3], params[4])))
-		print("C_combine cost:", log2(C_combine(self.n,self.k,params[0],params[1],2**params[3], params[4])))
-		print("final check cost:", log2(C_final_check(self.n,self.k,params[0],params[1],2**params[3], params[4])))
+		print("C_combine cost:", log2(C_combine(self.n,self.k,params[0],params[1],2**params[3])))
+		print("final check cost:", log2(C_final_check_doom(self.n,self.k,params[0],params[1],2**params[3], self.k)))
+		print("probability:", pr_success(self.n,self.k,self.t,params[0],params[1], dual=0)-log2(self.k))
 
 
 class HQC_security:
@@ -272,8 +300,13 @@ class HQC_security:
 					q = comb(p,int(p/2))*comb(self.k+l-p,int(p/2))/comb(self.k+l,p)
 					M = 2/q
 					M *= M_overhead
-					sol = (comb(self.k+l,p))/(np.longdouble)(2**l)
-					temp = ISD_prime(self.n,self.k,self.w,p,p_prime, l,M, dual=0) - log2(self.k)/2 # out of many.
+					if DOOM == 1:
+						M *= 2 # from the doom attack 
+						sol = self.k * (comb(self.k+l,p))/(np.longdouble)(2**l)
+						temp = ISD_doom(self.n,self.k,self.w,p,p_prime, l,M,0, self.k) # out of many.
+					if DOOM == 0:
+						sol =  (comb(self.k+l,p))/(np.longdouble)(2**l)
+						temp = ISD_prime(self.n,self.k,self.w,p,p_prime, l,M,0)
 					if sol >= 1 and temp <= init and M/2>= sol and comb(self.k+l, p_pprime) <= M and log2(M) <M_UPPER_BOUND:
 						init = temp
 						params[0] = p
@@ -288,8 +321,10 @@ class HQC_security:
 		print("check cost:", log2(C_check(self.n,self.k,params[0],params[1],2**params[3])))
 		print("C_label cost:", log2(C_label(self.n,self.k,params[0],params[1],2**params[3])))
 		print("C_move cost:", log2(C_move(self.n,self.k,params[0],params[1],2**params[3], params[4])))
-		print("C_combine cost:", log2(C_combine(self.n,self.k,params[0],params[1],2**params[3], params[4])))
-		print("final check cost:", log2(C_final_check(self.n,self.k,params[0],params[1],2**params[3], params[4])))
+		print("C_combine cost:", log2(C_combine(self.n,self.k,params[0],params[1],2**params[3])))
+		print("final check cost:", log2(C_final_check_doom(self.n,self.k,params[0],params[1],2**params[3], self.k)))
+		print("probability:", pr_success(self.n,self.k,self.w,params[0],params[1], dual=0)-log2(self.k))
+
 
 class CM_security:
 	"""
