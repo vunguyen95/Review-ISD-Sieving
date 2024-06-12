@@ -1,0 +1,74 @@
+#----# McEliece1, MEM = 60 (bits) #----#
+MEMORY LIMIT:  60.0
+3488
+2720
+64
+Complexities Analysis of ISD algorithms
+T_dumer_reviewer = 147.36
+params:  {'p': 3, 'l': 36, 'Memory:': 29.6969767560785}
+T_Stern_reviewer = 147.69
+params:  {'p': 3, 'l': 35, 'Memory': 29.640027485488975}
+----------------------
+mmt_Baldi =:  144.78
+{'p': 16, 'l': 105, 'memory (list size)': 38.94105830249443}
+----------------------------
+BJMM = 144.23
+{'p': 12, 'p1': 8, 'eps': 2, 'l': 90, 'l2': 31, 'l1': 59, 'memory (list size)': 44.60320729582567}
+----------------------------
+MMT = 144.44
+{'p': 8, 'l': 46, 'l2': 6, 'l1': 40, 'memory (list size)': 33.73244799503982}
+
+Sieve_ISD = 143.4/144.6, memory (list size) = 58 - log2(n) =  46.23
+
+
+------------------------------------------------------------------------
+
+#----# McEliece3, MEM = 60 bits #----#
+MEMORY LIMIT:  60.0
+4608
+3360
+96
+Complexities Analysis of ISD algorithms
+T_dumer_reviewer = 189.2
+params:  {'p': 3, 'l': 38, 'Memory:': 30.6039005591879}
+T_Stern_reviewer = 189.51
+params:  {'p': 3, 'l': 37, 'Memory': 30.555197907602963}
+
+----------------------
+mmt_Baldi =:  185.95
+{'p': 16, 'l': 110, 'memory (list size)': 40.20516489663366}
+----------------------------
+BJMM = 184.73
+{'p': 12, 'p1': 8, 'eps': 2, 'l': 90, 'l2': 32, 'l1': 58, 'memory (list size)': 46.3737643891598}
+----------------------------
+MMT = 186.12
+{'p': 8, 'l': 48, 'l2': 6, 'l1': 42, 'memory (list size)': 34.937272011388686}
+
+
+Sieving_ISD = 184.8/186.0, memory (list size) = 55 - log2(n) =  42.83
+
+------------------------------------------------------------------------------------
+
+#----# McEliece 5, MEM = 60 bits #----#
+MEMORY LIMIT:  60.0
+6688
+5024
+128
+Complexities Analysis of ISD algorithms
+T_dumer_reviewer = 264.69
+params:  {'p': 5, 'l': 58, 'Memory:': 50.64333168365849}
+T_Stern_reviewer = 264.93
+params:  {'p': 6, 'l': 66, 'Memory': 59.26725028371674}
+
+----------------------
+mmt_Baldi =:  259.8
+{'p': 16, 'l': 117, 'memory (list size)': 42.5895092352068}
+----------------------------
+BJMM = 264.88
+{'p': 8, 'p1': 6, 'eps': 2, 'l': 90, 'l2': 29, 'l1': 61, 'memory (list size)': 34.92940644447252}
+
+----------------------------
+MMT = 261.63
+{'p': 8, 'l': 51, 'l2': 6, 'l1': 45, 'memory (list size)': 37.23455108874264}
+
+Sieving_ISD = 259.2/260.4, memory (list size) = 59 - log2(n) = 46.29
